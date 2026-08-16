@@ -1,0 +1,161 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Software engineering project}
+\author{Jaspreet Singh Sanveer Singh Harshjot Singh}
+\date{August 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+The Smart Sports Equipment Management System (SSEMS) is a web-based platform designed to digitize the process of issuing and returning sports equipment at a college sports complex. Traditionally, this process requires students to physically deposit their identity card in exchange for equipment, with records maintained manually in a register. SSEMS replaces this workflow with a QR-code-based digital system that tracks inventory in real time and ensures equitable access to high-demand equipment through a fairness-aware scheduling algorithm.
+
+\section{Motivation}
+The manual issue-return process at college sports complexe suffers from several shortcomings:
+\begin{itemize}
+    \item Lack of a centralized, searchable record of equipment availability and condition.
+    \item No visibility into overdue or damaged items until physically checked.
+    \item High-demand equipment (e.g., courts, basketballs) is frequently monopolized by the same group of students, leaving others with little or no access.
+    \item Manual record-keeping is time-consuming for sports complex staff and error-prone.
+\end{itemize}
+A digital system addresses these inefficiencies while introducing accountability and fairness into equipment allocation.
+
+\section{Problem Statement}
+Given a sports complex with a finite inventory of equipment and limited time-slots for high-demand resources (courts, popular equipment), design and implement a system that:
+\begin{enumerate}
+    \item Digitizes student identification and equipment issue/return, eliminating the need for physical ID card deposits.
+    \item Maintains a real-time, centralized inventory record accessible to stakeholders (staff/administration).
+    \item Implements a scheduling mechanism that distributes access to high-demand equipment fairly, preventing monopolization by a subset of students.
+\end{enumerate}
+
+\section{Proposed Solution}
+SSEMS is composed of the following core modules:
+\begin{itemize}
+    \item \textbf{Authentication \& Digital ID}: Each student is issued a unique QR code (derived from their student ID) used for identification instead of a physical card.
+    \item \textbf{Inventory Management}: All equipment items are tracked with real-time status (available, issued, under maintenance, damaged).
+    \item \textbf{Issue/Return Workflow}: Staff scan a student's QR code and the corresponding item to create a transaction record, with automatic due-time assignment.
+    \item \textbf{Fairness Scheduling Algorithm}: For high-demand items, a priority-weighted queue and hard usage caps ensure equitable distribution of access (detailed in Section~\ref{sec:fairness}).
+    \item \textbf{Admin Dashboard}: Displays live stock levels, defaulter lists, and usage analytics.
+    \item \textbf{Notifications}: Automated reminders for return deadlines.
+\end{itemize}
+
+\section{System Architecture and Tech Stack}
+\begin{itemize}
+    \item \textbf{Backend}: FastAPI (Python), providing REST APIs for all core operations.
+    \item \textbf{ORM \& Database}: SQLModel with PostgreSQL as the relational data store.
+    \item \textbf{Frontend}: React (with Streamlit used for early-stage MVP prototyping).
+    \item \textbf{QR Code Handling}: The \texttt{qrcode} Python library for generation and \texttt{html5-qrcode} (browser-based) for scanning.
+    \item \textbf{Containerization \& Deployment}: Docker Compose to orchestrate backend, database, and frontend services; deployed on a free-tier platform such as Render or Railway.
+    \item \textbf{Notifications}: SMTP-based email reminders for due/overdue equipment.
+\end{itemize}
+
+\section{Database Schema}
+The relational schema consists of six primary entities.
+
+\subsection{Students}
+\begin{itemize}
+    \item \texttt{student\_id} (Primary Key)
+    \item \texttt{name}, \texttt{email}, \texttt{department}
+    \item \texttt{qr\_code\_hash} — unique token embedded in the student's QR code
+\end{itemize}
+
+\subsection{Equipment Items}
+\begin{itemize}
+    \item \texttt{item\_id} (Primary Key)
+    \item \texttt{category}, \texttt{name}
+    \item \texttt{status} — available / issued / maintenance / damaged
+    \item \texttt{total\_units} — for non-unique, bulk-tracked items
+\end{itemize}
+
+
+\subsection{Transactions}
+\begin{itemize}
+    \item \texttt{transaction\_id} (Primary Key)
+    \item \texttt{student\_id}, \texttt{item\_id} (Foreign Keys)
+    \item \texttt{issue\_time}, \texttt{due\_time}, \texttt{return\_time}
+    \item \texttt{condition\_on\_return}, \texttt{late\_flag}
+\end{itemize}
+
+\subsection{Bookings}
+Used for slot-based equipment such as courts.
+\begin{itemize}
+    \item \texttt{booking\_id} (Primary Key)
+    \item \texttt{student\_id}, \texttt{item\_id} (Foreign Keys)
+    \item \texttt{slot\_start}, \texttt{slot\_end}
+    \item \texttt{status} — confirmed / waitlisted / cancelled / completed / no\_show
+    \item \texttt{priority\_score\_at\_booking} — snapshot for auditability
+\end{itemize}
+
+\subsection{Usage Statistics}
+A denormalized table updated on each transaction/booking closure, avoiding recomputation from the full transaction history.
+\begin{itemize}
+    \item \texttt{student\_id} (Primary Key, Foreign Key)
+    \item \texttt{sessions\_last\_7\_days}, \texttt{total\_minutes\_last\_7\_days}
+    \item \texttt{last\_played\_at}
+\end{itemize}
+
+\subsection{Defaulters}
+\begin{itemize}
+    \item \texttt{student\_id}
+    \item \texttt{late\_returns\_count}, \texttt{current\_status}
+\end{itemize}
+
+\section{Fairness Scheduling Algorithm}
+\label{sec:fairness}
+When demand for a slot or item exceeds available supply, waiting students are ranked using a \emph{priority score}, where a lower score indicates higher priority.
+
+\subsection{Priority Score Formula}
+\begin{equation}
+    S_{\text{norm}} = \frac{\text{sessions\_last\_7\_days}}{\max(\text{sessions\_last\_7\_days})_{\text{all students}}}
+\end{equation}
+
+\begin{equation}
+    P_{\text{recency}} =
+    \begin{cases}
+        (2 - d) \times 0.5, & \text{if } d < 2 \\
+        0, & \text{if } d \geq 2
+    \end{cases}
+\end{equation}
+where $d$ is the number of days since the student last played.
+
+\begin{equation}
+    \text{priority\_score} = S_{\text{norm}} + P_{\text{recency}}
+\end{equation}
+
+\subsection{Allocation Procedure}
+\begin{enumerate}
+    \item Collect all booking requests for a given slot/item.
+    \item Sort requests in ascending order of \texttt{priority\_score}.
+    \item Allocate the slot(s) to the lowest-scoring student(s) up to capacity.
+    \item Remaining students are placed on a waitlist, carried forward to the next available slot.
+    \item A hard cap is enforced independently of the score: if \texttt{sessions\_last\_7\_days} $\geq$ \texttt{daily\_cap}, the student is blocked from further bookings that day.
+    \item Ties are broken using first-come-first-served (request timestamp).
+\end{enumerate}
+This two-layer design — a soft priority ranking combined with a hard usage cap — ensures fairness while remaining explainable and simple to justify.
+
+\section{Implementation Methodology}
+The system is developing in the following phases:
+
+\begin{enumerate}
+    \item \textbf{Environment Setup}: Project repository initialized with separate backend/frontend directories; Python virtual environment configured with FastAPI, SQLModel, and Uvicorn; PostgreSQL provisioned via Docker.
+    \item \textbf{Database Schema Implementation}: Entities translated into SQLModel classes; Alembic used for migration management; database seeded with sample data for testing.
+    \item \textbf{Core API Development}: CRUD endpoints implemented for equipment registration, student registration, and issue/return operations, validated using Postman/Thunder Client.
+    \item \textbf{QR-Based Identification}: Per-student QR codes generated using the \texttt{qrcode} library; a scanning interface built using \texttt{html5-qrcode} for staff to identify students without manual entry.
+    \item \textbf{Fairness Scheduling Logic}: Usage statistics updated on transaction closure; the priority score computed as an independently testable module; integrated into the booking endpoint with cap enforcement.
+    \item \textbf{Frontend Development}: A React-based interface built with separate student (browse/book equipment, view queue position) and staff/admin (scan, dashboard, defaulter list) views.
+    \item \textbf{Additional Features}: Email notifications for due returns, analytics dashboards (peak hours, most-borrowed items), and damage logging on return.
+    \item \textbf{Containerization and Deployment}: Backend and frontend containerized with Docker; orchestrated via Docker Compose; deployed to a cloud platform for live demonstration.
+\end{enumerate}
+
+\section{Conclusion and Future Scope}
+SSEMS demonstrates how a manual, paper-based process can be digitized to improve accountability, transparency, and fairness in resource allocation. Potential extensions include:
+\begin{itemize}
+    \item A machine learning model to predict no-show probability for bookings, enabling smart overbooking.
+    \item An app deployed in real time used by Thapar students in real time.
+    \item Gamification (leaderboards) to encourage timely returns.
+    \item Integration with the college's existing SSO/authentication infrastructure.
+\end{itemize}
+
+\end{document}
