@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage{graphicx} % Required for inserting images
 
-\title{Software engineering project}
+\title{Smart Sports Equipment Management System}
 \author{Jaspreet Singh Sanveer Singh Harshjot Singh}
 \date{August 2026}
 
@@ -13,11 +13,11 @@
 The Smart Sports Equipment Management System (SSEMS) is a web-based platform designed to digitize the process of issuing and returning sports equipment at a college sports complex. Traditionally, this process requires students to physically deposit their identity card in exchange for equipment, with records maintained manually in a register. SSEMS replaces this workflow with a QR-code-based digital system that tracks inventory in real time and ensures equitable access to high-demand equipment through a fairness-aware scheduling algorithm.
 
 \section{Motivation}
-The manual issue-return process at college sports complexe suffers from several shortcomings:
+The manual issue-return process at college sports complex suffers from several shortcomings:
 \begin{itemize}
     \item Lack of a centralized, searchable record of equipment availability and condition.
     \item No visibility into overdue or damaged items until physically checked.
-    \item High-demand equipment (e.g., courts, basketballs) is frequently monopolized by the same group of students, leaving others with little or no access.
+    \item High-demand equipment (e.g courts, basketballs) is frequently monopolized by the same group of students, leaving others with little or no access.
     \item Manual record-keeping is time-consuming for sports complex staff and error-prone.
 \end{itemize}
 A digital system addresses these inefficiencies while introducing accountability and fairness into equipment allocation.
@@ -68,7 +68,6 @@ The relational schema consists of six primary entities.
     \item \texttt{status} — available / issued / maintenance / damaged
     \item \texttt{total\_units} — for non-unique, bulk-tracked items
 \end{itemize}
-
 
 \subsection{Transactions}
 \begin{itemize}
