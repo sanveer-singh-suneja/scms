@@ -1,0 +1,50 @@
+# ── Python bytecode & cache ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyo
+
+# ── Virtual environments ──────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.Python
+Pipfile.lock
+
+# ── Distribution / packaging ──────────────────────────────────────────────────
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+sdist/
+wheels/
+.installed.cfg
+.eggs/
+
+# ── Testing & coverage ────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+nosetests.xml
+
+# ── Type checkers ─────────────────────────────────────────────────────────────
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+.pytype/
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── PyInstaller ───────────────────────────────────────────────────────────────
+*.manifest
+*.spec
+
+# ── Alembic migration files are intentionally tracked ─────────────────────────
+# Do NOT add alembic/versions/ here

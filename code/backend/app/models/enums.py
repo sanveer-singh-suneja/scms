@@ -1,0 +1,72 @@
+from enum import Enum
+
+
+class StudentStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    SUSPENDED = "SUSPENDED"
+    GRADUATED = "GRADUATED"
+
+
+class UserStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+
+
+class UserRole(str, Enum):
+    STAFF = "STAFF"
+    ADMIN = "ADMIN"
+
+
+class EquipmentStatus(str, Enum):
+    AVAILABLE = "AVAILABLE"
+    BOOKED = "BOOKED"
+    ISSUED = "ISSUED"
+    MAINTENANCE = "MAINTENANCE"
+    RETIRED = "RETIRED"
+
+
+class EquipmentCondition(str, Enum):
+    GOOD = "GOOD"
+    FAIR = "FAIR"
+    DAMAGED = "DAMAGED"
+
+
+class SlotStatus(str, Enum):
+    OPEN = "OPEN"
+    PENDING_ALLOCATION = "PENDING_ALLOCATION"
+    FULL = "FULL"
+    CLOSED = "CLOSED"
+
+
+class BookingStatus(str, Enum):
+    REQUESTED = "REQUESTED"
+    CONFIRMED = "CONFIRMED"
+    WAITLISTED = "WAITLISTED"
+    CANCELLED = "CANCELLED"
+    NO_SHOW = "NO_SHOW"
+    COMPLETED = "COMPLETED"
+
+
+class TransactionStatus(str, Enum):
+    ISSUED = "ISSUED"
+    RETURNED = "RETURNED"
+    RETURNED_DAMAGED = "RETURNED_DAMAGED"
+    OVERDUE = "OVERDUE"
+
+
+class DefaulterStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    NOTIFIED = "NOTIFIED"
+    RESOLVED = "RESOLVED"
+
+
+class NotificationType(str, Enum):
+    BOOKING_RECEIVED = "BOOKING_RECEIVED"
+    BOOKING_CONFIRMED = "BOOKING_CONFIRMED"
+    BOOKING_WAITLISTED = "BOOKING_WAITLISTED"
+    WAITLIST_PROMOTED = "WAITLIST_PROMOTED"
+    BOOKING_CANCELLED = "BOOKING_CANCELLED"
+    RETURN_REMINDER = "RETURN_REMINDER"
+    OVERDUE_ALERT = "OVERDUE_ALERT"
+    RETURN_CONFIRMED = "RETURN_CONFIRMED"
+    DAMAGE_LOGGED = "DAMAGE_LOGGED"
