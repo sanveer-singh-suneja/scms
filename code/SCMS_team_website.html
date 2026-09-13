@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Sports Complex Management System (SCMS) · TIET</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+
+    :root{
+      --bg:#F3F7F0;--bg2:#E8F0E3;--bg3:#DDEBD6;--bg-card:#FFFFFF;--bg-elevated:#EDF4E9;
+      --forest:#1E5C1E;--forest2:#2A7A2A;--sage:#4E8B4E;--mint:#7DB87D;--leaf:#A8D5A8;
+      --earth:#7A5C1E;--earth2:#A07828;--sky:#3A7D9E;--rust:#B04A1E;--plum:#5C3A7A;
+      --text:#142814;--text-muted:#3A5A3A;--text-dim:#6A8A6A;
+      --border:rgba(46,100,46,0.15);--border-sub:rgba(46,100,46,0.08);
+      --f-sans:'Plus Jakarta Sans',sans-serif;--f-serif:'Instrument Serif',serif;--f-mono:'JetBrains Mono',monospace;
+      --r:12px;--rl:20px;
+      --sh:0 1px 3px rgba(30,92,30,0.06),0 4px 16px rgba(30,92,30,0.08);
+      --sh-lg:0 8px 32px rgba(30,92,30,0.12),0 2px 8px rgba(30,92,30,0.06);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:var(--f-sans);font-size:15px;line-height:1.65;overflow-x:hidden;min-height:100vh}
+    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--mint);border-radius:3px}
+
+    /* ── NAV ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;display:flex;align-items:center;
+      background:rgba(243,247,240,0.88);backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border-sub);box-shadow:0 1px 8px rgba(30,92,30,0.05)}
+    .nav-in{max-width:1280px;margin:0 auto;width:100%;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{font-family:var(--f-sans);font-weight:800;font-size:19px;letter-spacing:-0.03em;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:2px}
+    .nav-logo em{font-style:normal;color:var(--forest)}
+    .nav-logo .leaf-dot{display:inline-block;width:7px;height:7px;border-radius:50% 0 50% 0;background:var(--forest);margin-left:1px;transform:rotate(45deg)}
+    .nav-links{display:flex;align-items:center;gap:1px;list-style:none}
+    .nav-links a{color:var(--text-muted);text-decoration:none;font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:6px;transition:all .15s;letter-spacing:0.01em}
+    .nav-links a:hover{color:var(--forest);background:rgba(30,92,30,0.07)}
+    .nav-links a.active{color:var(--forest)}
+    .nav-burger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+    .nav-burger span{display:block;width:22px;height:2px;background:var(--text-muted);border-radius:2px}
+
+    /* ── LAYOUT ── */
+    .page{padding-top:58px;min-height:100vh}
+    .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+    .section{padding:88px 0}
+    .section-green{background:linear-gradient(180deg,rgba(232,240,227,0.6) 0%,rgba(243,247,240,0) 100%)}
+    .section-leaf{background:linear-gradient(180deg,rgba(221,235,214,0.4) 0%,rgba(243,247,240,0) 100%)}
+
+    /* ── HERO ── */
+    .hero{min-height:calc(100vh - 58px);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .hero-bg{position:absolute;inset:0;
+      background:
+        radial-gradient(ellipse 120% 70% at 60% 30%,rgba(168,213,168,0.35) 0%,transparent 60%),
+        radial-gradient(ellipse 80% 80% at 10% 80%,rgba(125,184,125,0.2) 0%,transparent 50%),
+        radial-gradient(ellipse 60% 60% at 90% 70%,rgba(221,235,214,0.3) 0%,transparent 50%),
+        linear-gradient(155deg,#EAF3E4 0%,#F3F7F0 40%,#EDF5E8 70%,#E8F0E3 100%)}
+    /* SVG grass/leaves layer */
+    .hero-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+    .hero-content{position:relative;z-index:2;text-align:center;max-width:860px;padding:40px 24px}
+    .hero-pill{display:inline-flex;align-items:center;gap:8px;
+      background:rgba(30,92,30,0.08);border:1px solid rgba(30,92,30,0.18);
+      border-radius:24px;padding:5px 16px;margin-bottom:28px}
+    .hero-pill span{font-family:var(--f-mono);font-size:10.5px;color:var(--forest);letter-spacing:0.1em}
+    .hero-pill .dot{width:5px;height:5px;border-radius:50%;background:var(--sage)}
+    .hero-big{font-family:var(--f-sans);font-size:clamp(3.2rem,8vw,6rem);font-weight:800;letter-spacing:-0.04em;line-height:.95;color:var(--text);margin-bottom:20px}
+    .hero-big em{font-style:normal;color:var(--forest)}
+    .hero-tagline{font-family:var(--f-serif);font-size:clamp(1.05rem,2vw,1.3rem);color:var(--text-muted);font-style:italic;margin-bottom:12px}
+    .hero-sub{font-size:14px;color:var(--text-dim);margin-bottom:36px;letter-spacing:0.02em;font-family:var(--f-mono)}
+    .hero-ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:40px}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;
+      background:rgba(255,255,255,0.8);border:1px solid var(--border);
+      border-radius:8px;padding:8px 16px;font-family:var(--f-mono);font-size:10.5px;color:var(--text-muted);
+      box-shadow:var(--sh)}
+    .hero-badge .pulse{width:5px;height:5px;border-radius:50%;background:#3CAF3C;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    /* floating stats */
+    .hero-stats{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:28px}
+    .hero-stat{background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);border:1px solid var(--border);
+      border-radius:10px;padding:10px 20px;text-align:center;box-shadow:var(--sh)}
+    .hero-stat-val{font-family:var(--f-sans);font-size:1.4rem;font-weight:800;color:var(--forest);line-height:1}
+    .hero-stat-lbl{font-family:var(--f-mono);font-size:9px;color:var(--text-dim);margin-top:3px;letter-spacing:0.08em;text-transform:uppercase}
+
+    /* ── TYPOGRAPHY ── */
+    h1,h2,h3,h4{font-family:var(--f-sans);font-weight:700;line-height:1.2;letter-spacing:-0.02em;color:var(--text)}
+    h1{font-size:clamp(2rem,4vw,3.2rem)}
+    h2{font-size:clamp(1.4rem,3vw,2rem)}
+    h3{font-size:1.1rem}
+    .lbl{font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--forest)}
+    .lbl-earth{color:var(--earth)}
+    .sec-hdr{margin-bottom:52px}
+    .sec-hdr h2{margin:8px 0 10px}
+    .sec-hdr p{color:var(--text-muted);max-width:520px;font-size:14.5px}
+
+    /* ── CARDS ── */
+    .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:24px;box-shadow:var(--sh);transition:border-color .2s,box-shadow .2s,transform .2s}
+    .card:hover{border-color:rgba(30,92,30,0.3);box-shadow:var(--sh-lg)}
+    .card-green{background:linear-gradient(135deg,rgba(232,240,227,0.8),rgba(243,247,240,0.6))}
+
+    /* ── BUTTONS ── */
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:8px;
+      font-family:var(--f-sans);font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;border:none;transition:all .15s;letter-spacing:0.01em}
+    .btn-p{background:var(--forest);color:#fff}
+    .btn-p:hover{background:var(--forest2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(30,92,30,0.28)}
+    .btn-s{background:rgba(255,255,255,0.8);color:var(--text-muted);border:1px solid var(--border)}
+    .btn-s:hover{color:var(--forest);border-color:rgba(30,92,30,0.35);background:#fff}
+    .btn-leaf{background:rgba(78,139,78,0.1);color:var(--sage);border:1px solid rgba(78,139,78,0.25)}
+    .btn-leaf:hover{background:rgba(78,139,78,0.18)}
+
+    /* ── BADGES ── */
+    .badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:700;font-family:var(--f-mono);letter-spacing:.06em}
+    .b-forest{background:rgba(30,92,30,0.09);color:var(--forest);border:1px solid rgba(30,92,30,0.2)}
+    .b-sage{background:rgba(78,139,78,0.09);color:var(--sage);border:1px solid rgba(78,139,78,0.2)}
+    .b-earth{background:rgba(122,92,30,0.09);color:var(--earth);border:1px solid rgba(122,92,30,0.2)}
+    .b-sky{background:rgba(58,125,158,0.09);color:var(--sky);border:1px solid rgba(58,125,158,0.2)}
+    .b-green{background:rgba(60,175,60,0.09);color:#2A8A2A;border:1px solid rgba(60,175,60,0.2)}
+    .b-plum{background:rgba(92,58,122,0.09);color:var(--plum);border:1px solid rgba(92,58,122,0.2)}
+
+    /* ── GRIDS ── */
+    .g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+    .g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+    .g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+    .divider{height:1px;background:var(--border-sub)}
+
+    /* ── FEATURE STRIP ── */
+    .feat-strip{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh)}
+    .feat-item{flex:1;min-width:180px;padding:28px 24px;background:var(--bg-card);border-right:1px solid var(--border);transition:background .2s}
+    .feat-item:last-child{border-right:none}
+    .feat-item:hover{background:var(--bg-elevated)}
+    .feat-icon{font-size:28px;margin-bottom:10px}
+    .feat-title{font-weight:700;font-size:14px;margin-bottom:4px}
+    .feat-desc{font-size:12.5px;color:var(--text-muted);line-height:1.5}
+
+    /* ── TEAM CARDS ── */
+    .team-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rl);padding:32px 24px;
+      display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;
+      position:relative;overflow:hidden;box-shadow:var(--sh);transition:all .2s}
+    .team-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:rgba(30,92,30,0.3)}
+    .team-card.leader::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+      background:linear-gradient(90deg,var(--forest),var(--sage),var(--mint))}
+    .team-card::after{content:'';position:absolute;bottom:-30px;right:-30px;width:100px;height:100px;
+      border-radius:50% 0 50% 0;background:rgba(168,213,168,0.12);pointer-events:none}
+    .t-avatar{width:150px;height:150px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+      font-family:var(--f-sans);font-size:48px;font-weight:800;color:#fff;
+      border:4px solid rgba(255,255,255,0.95);box-shadow:0 8px 28px rgba(30,92,30,0.25);flex-shrink:0}
+    .t-name{font-family:var(--f-sans);font-size:1.05rem;font-weight:700}
+    .t-role{font-size:12px;color:var(--text-muted);line-height:1.4}
+    .t-leader{font-family:var(--f-mono);font-size:9px;font-weight:600;letter-spacing:.14em;color:var(--forest);
+      border:1px solid rgba(30,92,30,0.3);border-radius:4px;padding:2px 8px;background:rgba(30,92,30,0.07)}
+    .t-roll{font-family:var(--f-mono);font-size:10.5px;color:var(--text-dim)}
+    .soc{display:flex;gap:7px;margin-top:2px}
+    .soc a{width:30px;height:30px;border-radius:7px;background:var(--bg-elevated);border:1px solid var(--border-sub);
+      display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:13px;text-decoration:none;transition:all .15s}
+    .soc a:hover{background:rgba(30,92,30,0.1);color:var(--forest);border-color:rgba(30,92,30,0.25)}
+
+    /* ── ROADMAP ── */
+    .rm-phase{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:4px;box-shadow:var(--sh);transition:box-shadow .2s}
+    .rm-phase:hover{box-shadow:var(--sh-lg)}
+    .rm-hdr{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;background:var(--bg-card)}
+    .rm-title{font-family:var(--f-sans);font-weight:700;font-size:14px}
+    .rm-weeks{font-family:var(--f-mono);font-size:10px;color:var(--text-dim);margin-top:2px}
+    .rm-bar{height:5px;background:var(--bg-elevated)}
+    .rm-fill{height:100%;border-radius:2px;transition:width .8s ease}
+
+    /* ── TIMELINE ── */
+    .timeline{position:relative;padding-left:32px}
+    .timeline::before{content:'';position:absolute;left:10px;top:8px;bottom:0;width:1.5px;
+      background:linear-gradient(to bottom,var(--forest),rgba(30,92,30,0.1))}
+    .tl-item{position:relative;margin-bottom:28px}
+    .tl-dot{position:absolute;left:-28px;top:5px;width:13px;height:13px;border-radius:50%;
+      border:2px solid var(--mint);background:var(--bg)}
+    .tl-dot.done{background:var(--sage);border-color:var(--sage)}
+    .tl-dot.active{background:var(--forest);border-color:var(--forest);box-shadow:0 0 0 4px rgba(30,92,30,0.12)}
+
+    /* ── GITHUB ── */
+    .commit-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border-sub)}
+    .commit-item:last-child{border-bottom:none}
+    .c-msg{font-size:13px;font-weight:600;color:var(--text)}
+    .c-meta{font-family:var(--f-mono);font-size:10.5px;color:var(--text-dim);margin-top:2px}
+    .c-sha{font-family:var(--f-mono);font-size:11px;color:var(--sky);white-space:nowrap}
+    .gh-lang-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
+    .issue-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-sub)}
+    .issue-item:last-child{border-bottom:none}
+    .issue-num{font-family:var(--f-mono);font-size:10.5px;color:var(--text-dim);white-space:nowrap}
+    .issue-title{font-size:13px;font-weight:600}
+    .pr-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-sub)}
+    .pr-item:last-child{border-bottom:none}
+    .pr-title{font-size:13px;font-weight:600;flex:1}
+    .stat-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:20px;box-shadow:var(--sh);transition:all .2s}
+    .stat-box:hover{box-shadow:var(--sh-lg);border-color:rgba(30,92,30,0.25)}
+    .stat-val{font-family:var(--f-sans);font-size:2rem;font-weight:800;color:var(--forest);line-height:1}
+    .stat-lbl{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+    /* ── PROFILE ── */
+    .prof-hero{background:linear-gradient(155deg,#E0EDD8 0%,#F3F7F0 100%);border-bottom:1px solid var(--border-sub);padding:60px 0 36px}
+    .prof-in{max-width:1280px;margin:0 auto;padding:0 24px;display:flex;align-items:flex-start;gap:32px}
+    .prof-av{width:110px;height:110px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+      font-family:var(--f-sans);font-size:36px;font-weight:800;color:#fff;
+      border:4px solid rgba(255,255,255,0.9);box-shadow:var(--sh-lg)}
+    .prof-name{font-family:var(--f-sans);font-size:1.9rem;font-weight:800;margin-bottom:4px;letter-spacing:-.03em}
+    .prof-role{color:var(--text-muted);font-size:14.5px;margin-bottom:14px}
+    .contrib-block{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;box-shadow:var(--sh)}
+    .contrib-hdr{background:var(--bg-elevated);padding:10px 18px;font-weight:700;font-size:12px}
+    .contrib-body{padding:12px 18px;background:var(--bg-card)}
+    .contrib-line{font-size:12.5px;color:var(--text-muted);padding:3px 0}
+    .contrib-line::before{content:'→ ';color:var(--sage)}
+
+    /* ── PRESENTATIONS ── */
+    .ppt-embed{width:100%;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);
+      aspect-ratio:16/9;overflow:hidden;background:#f0f0f0}
+    .ppt-embed iframe{width:100%;height:100%;border:none}
+
+    /* ── ARCH SVG ── */
+    .arch-wrap{background:linear-gradient(135deg,rgba(232,240,227,0.6),rgba(255,255,255,0.9));
+      border:1px solid var(--border);border-radius:var(--rl);padding:40px;box-shadow:var(--sh);display:grid;place-items:center}
+
+    /* ── FOOTER ── */
+    footer{background:#1A3A1A;border-top:2px solid rgba(78,139,78,0.3);padding:44px 0;margin-top:80px}
+    .ft-in{max-width:1280px;margin:0 auto;padding:0 24px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;align-items:center}
+    .ft-brand{font-family:var(--f-sans);font-weight:800;color:#C8E6C8;font-size:20px;letter-spacing:-.02em}
+    .ft-brand em{font-style:normal;color:#7BC67B}
+    .ft-meta{font-family:var(--f-mono);font-size:10.5px;color:rgba(200,230,200,0.55);line-height:1.7}
+    .ft-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .ft-link{font-family:var(--f-mono);font-size:10px;color:rgba(200,230,200,0.5);text-decoration:none;
+      border:1px solid rgba(200,230,200,0.15);border-radius:4px;padding:2px 8px;transition:all .15s}
+    .ft-link:hover{color:#C8E6C8;border-color:rgba(200,230,200,0.3)}
+
+    /* ── MISC ── */
+    .coming{display:inline-block;padding:2px 9px;background:rgba(122,92,30,0.07);border:1px solid rgba(122,92,30,0.2);
+      border-radius:4px;font-family:var(--f-mono);font-size:10px;color:var(--earth);letter-spacing:.08em}
+    .back-link{display:inline-flex;align-items:center;gap:5px;color:var(--text-muted);text-decoration:none;font-size:13px;margin-bottom:20px;transition:color .15s}
+    .back-link:hover{color:var(--forest)}
+    .notfound{min-height:80vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:900px){
+      .nav-links{display:none}
+      .nav-links.open{display:flex;flex-direction:column;position:fixed;top:58px;left:0;right:0;
+        background:rgba(243,247,240,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-sub);padding:14px;gap:3px;z-index:199}
+      .nav-burger{display:flex}
+      .g4{grid-template-columns:repeat(2,1fr)}
+      .prof-in{flex-direction:column}
+      .feat-strip{flex-direction:column}
+      .feat-item{border-right:none;border-bottom:1px solid var(--border)}
+      .feat-item:last-child{border-bottom:none}
+    }
+    @media(max-width:600px){.hero-big{font-size:2.6rem}.g4{grid-template-columns:1fr}}
+
+    /* ── UTILS ── */
+    .tc{text-align:center}.tm{color:var(--text-muted)}.td{color:var(--text-dim)}.mono{font-family:var(--f-mono)}
+    .mt8{margin-top:8px}.mt16{margin-top:16px}.mt24{margin-top:24px}.mt32{margin-top:32px}.mt48{margin-top:48px}
+    .mb8{margin-bottom:8px}.mb16{margin-bottom:16px}.mb24{margin-bottom:24px}
+    .flex{display:flex}.fw{flex-wrap:wrap}.aic{align-items:center}.g8{gap:8px}.g12{gap:12px}.g16{gap:16px}
+
+    /* ── PIPELINE ── */
+    .pipe{display:flex;flex-direction:column;align-items:center}
+    .pipe-step{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:10px 22px;
+      font-family:var(--f-mono);font-size:11.5px;color:var(--text-muted);min-width:220px;text-align:center;
+      box-shadow:var(--sh);transition:all .2s}
+    .pipe-step:hover{border-color:rgba(30,92,30,0.35);color:var(--forest)}
+    .pipe-step.hl{background:rgba(30,92,30,0.06);border-color:rgba(30,92,30,0.4);color:var(--forest);font-weight:600}
+    .pipe-arr{width:1.5px;height:22px;background:linear-gradient(to bottom,rgba(30,92,30,0.35),rgba(78,139,78,0.35));position:relative;display:flex;align-items:flex-end;justify-content:center}
+    .pipe-arr::after{content:'▾';color:var(--sage);font-size:10px;margin-bottom:-5px}
+
+    /* ── WEEK GRID ── */
+    .wk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:4px;margin-bottom:36px}
+    .wk-btn{padding:7px;border-radius:6px;border:1px solid var(--border-sub);cursor:pointer;
+      font-family:var(--f-mono);font-size:11px;background:transparent;color:var(--text-dim);transition:all .15s}
+    .wk-btn:hover{background:rgba(30,92,30,0.06);color:var(--forest)}
+    .wk-btn.done{background:rgba(30,92,30,0.05);border-color:rgba(30,92,30,0.18);color:var(--sage)}
+    .wk-btn.active{background:rgba(30,92,30,0.1);border-color:var(--forest);color:var(--forest);font-weight:700}
+  
+</style>
+</head>
+<body>
+<nav id="nav">
+  <div class="nav-in">
+    <a href="#" class="nav-logo" onclick="go('home');return false">SCM<em>S</em><span class="leaf-dot"></span></a>
+    <span style="font-family:var(--f-sans);font-weight:800;font-size:18px;letter-spacing:-0.03em;color:var(--forest)">TIET</span>
+    <ul class="nav-links" id="nl">
+      <li><a href="#" onclick="go('home');return false">Home</a></li>
+      <li><a href="#" onclick="go('project');return false">Project</a></li>
+      <li><a href="#" onclick="go('arch');return false">Architecture</a></li>
+      <li><a href="#" onclick="go('progress');return false">Progress</a></li>
+      <li><a href="#" onclick="go('team');return false">Team</a></li>
+      <li><a href="#" onclick="go('github');return false">Repository</a></li>
+      <li><a href="#" onclick="go('ppts');return false">Presentations</a></li>
+      <li><a href="#" onclick="go('docs');return false">Docs</a></li>
+      <li><a href="#" onclick="go('changelog');return false">Changelog</a></li>
+      <li><a href="#" onclick="go('deploy');return false" style="color:var(--earth)">Deploy</a></li>
+    </ul>
+    <button class="nav-burger" onclick="toggleNav()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div id="app"></div>
+<footer id="ft" style="display:none">
+ <div class="ft-in">
+  <div>
+   <div class="ft-brand">SCM<em>S</em></div>
+   <div class="ft-meta mt8">Smart Sports Equipment Management System<br>Software Engineering · Thapar Institute of Engineering & Technology, Patiala</div>
+   <div class="ft-links">
+    <a href="#" onclick="go('team');return false" class="ft-link">Team</a>
+    <a href="#" onclick="go('docs');return false" class="ft-link">Documentation</a>
+    <a href="#" onclick="go('changelog');return false" class="ft-link">Changelog</a>
+    <a href="#" onclick="go('deploy');return false" class="ft-link">Deploy Guide</a>
+   </div>
+  </div>
+  <div class="ft-meta" style="text-align:right">
+   <div style="color:rgba(200,230,200,0.75);font-weight:600;margin-bottom:4px;">Team Members</div>
+   <div>Jaspreet Singh · Sanveer Singh · Harshjot Singh</div>
+   <div class="mt8">Smart Sports Equipment Management System · TIET</div>
+  </div>
+ </div>
+</footer>
+<script>
+const PS={week:currentWeek(),phase:'Backend & Web Working · Flutter Next',progress:52,status:'In Progress'};
+function currentWeek(){return 5;}
+const TEAM=[
+ {id:'jaspreet',name:'Jaspreet',full:'Jaspreet Singh',roll:'1024240025',role:'Team Leader · System Integration',leader:true,init:'JS',color:'#2A7A2A',bio:'Team Leader responsible for project coordination, integration decisions, planning, and keeping the complete SCMS delivery aligned with the Software Engineering requirements.',github:'https://github.com/12jaspreetsingh',linkedin:'https://www.linkedin.com/in/jaspreet-singh369/',resp:['Overall team coordination and project planning','Requirement and workflow alignment','System integration and review','Presentation and submission coordination','Quality and milestone tracking']},
+ {id:'sanveer',name:'Sanveer',full:'Sanveer Singh',roll:'1024240026',role:'Backend · Flutter App · Web Dashboard · Website',leader:false,init:'SS',color:'#1E5C1E',bio:'Contributes to the FastAPI backend, Flutter mobile applications, React web dashboard, and project website, with a focus on implementation and integration across the SCMS system.',github:'https://github.com/sanveer-singh-suneja',linkedin:'https://www.linkedin.com/in/sardaar-sanveer-singh/',resp:['Main SCMS codebase implementation','FastAPI + SQLModel + PostgreSQL backend','Flutter student and staff applications','React + TypeScript web dashboard','Project website and technical integration']},
+ {id:'harshjot',name:'Harshjot',full:'Harshjot Singh',roll:'1024240028',role:'Testing · Documentation · Integration Support',leader:false,init:'HS',color:'#3A7D9E',bio:'Contributes to verification, documentation, integration support, and presentation readiness across the SCMS project.',github:'https://github.com/hsmehndru81',linkedin:'https://www.linkedin.com/in/harshjot-singh-in/',resp:['Testing and verification support','Documentation and requirement review','Integration and bug verification','Workflow validation','Demo and presentation support']}
+];
+const ROADMAP=[
+ {phase:'Requirements & Architecture',weeks:'1–2',color:'#1E5C1E',tasks:['Requirements analysis','Business rules','Architecture','Database schema','API contract'],pct:100,active:false},
+ {phase:'Backend & Database',weeks:'3–4',color:'#2A7A2A',tasks:['FastAPI services','SQLModel entities','Alembic migrations','Authentication','Fairness engine'],pct:100,active:false},
+ {phase:'Web Dashboard',weeks:'4–5',color:'#7A5C1E',tasks:['Admin dashboard','Inventory','Slots','Bookings','Analytics'],pct:90,active:true},
+ {phase:'Flutter Mobile Applications',weeks:'5–7',color:'#3A7D9E',tasks:['Student app','Staff app','QR workflows','Session handling','Notifications'],pct:20,active:true},
+ {phase:'Integration & Runtime Testing',weeks:'7–8',color:'#B04A1E',tasks:['Local environment','CORS/runtime validation','E2E workflows','Regression tests','Docker validation'],pct:10,active:false},
+ {phase:'Deployment & Final Acceptance',weeks:'9+',color:'#5C3A7A',tasks:['Production secrets','Production DB','HTTPS','APK configuration','Final acceptance'],pct:0,active:false}
+];
+const WEEKLY=[
+ {week:1,title:'Requirements & Scope',status:'done',summary:'Locked the SCMS problem statement, roles, business rules, entity model, workflows, and system boundaries.',done:['Requirements documented','Roles and permissions finalized','Core business rules agreed'],contribs:{jaspreet:['Coordinated scope and requirements'],sanveer:['Translated requirements into implementation plan'],harshjot:['Reviewed workflows and edge cases']},next:['Complete architecture and API contract']},
+ {week:2,title:'Architecture & Database Design',status:'done',summary:'Finalized the FastAPI, PostgreSQL, Flutter, and React architecture with the canonical database schema and API contract.',done:['Architecture documented','10 entities defined','API contract drafted'],contribs:{jaspreet:['Architecture review and coordination'],sanveer:['Backend structure and schema implementation'],harshjot:['Documentation and consistency review']},next:['Implement backend foundation']},
+ {week:3,title:'Backend Foundation',status:'done',summary:'Implemented the FastAPI backend, PostgreSQL schema, migrations, authentication, core services, fairness engine, and administrative APIs.',done:['FastAPI application','SQLModel models','Alembic migration','Demo seed data','Fairness allocation'],contribs:{jaspreet:['Integration review'],sanveer:['Backend implementation and integration'],harshjot:['API verification support']},next:['Complete and validate web dashboard']},
+ {week:4,title:'Web Dashboard',status:'done',summary:'Built and connected the React admin dashboard for inventory, slots, bookings, transactions, defaulters, analytics, fairness, and staff management.',done:['Dashboard and analytics','Inventory and slots','Bookings and transactions','Staff management','Local frontend/backend connection'],contribs:{jaspreet:['Dashboard review'],sanveer:['React web dashboard implementation'],harshjot:['UI testing and issue verification']},next:['Begin Flutter mobile implementation']},
+ {week:5,title:'Flutter App — Next Milestone',status:'current',summary:'Backend and web dashboard are working locally. The next major milestone is completing and validating the Flutter student and staff applications against the live local backend.',done:['Backend working locally','Database migrated and seeded','Web dashboard running','Local CORS issue fixed'],contribs:{jaspreet:['Integration coordination'],sanveer:['Backend/web implementation and local runtime fixes'],harshjot:['Runtime testing support']},next:['Student Flutter app','Staff Flutter app','QR workflows','Mobile E2E validation']},
+ {week:6,title:'Mobile Integration',status:'upcoming',summary:'Integrate the Flutter applications with the backend and validate authentication, booking, QR, issue/return, notifications, and session workflows.',done:[],contribs:{},next:['Student E2E testing','Staff E2E testing','Fairness workflow validation']},
+ {week:7,title:'Full System Integration',status:'upcoming',summary:'Run complete cross-platform workflows and close remaining integration issues before Docker and production preparation.',done:[],contribs:{},next:['Complete fairness workflow','Docker runtime test','Regression testing']},
+ {week:8,title:'Deployment Preparation',status:'upcoming',summary:'Prepare production secrets, database, HTTPS, backups, and release configuration.',done:[],contribs:{},next:['Production deployment','Final acceptance']}
+];
+const PPTS=[
+ {title:'Project Proposal & Requirements',type:'Planning',date:'Completed',desc:'Project scope, problem statement, requirements, roles, and system objectives.',status:'done'},
+ {title:'System Architecture & Database Design',type:'Technical Review',date:'Completed',desc:'Architecture, database schema, API contract, workflows, and fairness engine.',status:'done'},
+ {title:'Implementation Progress Review',type:'Progress Review',date:'Current',desc:'Backend, Flutter applications, web dashboard, testing, and integration progress.',status:'done'},
+ {title:'Final Technical Demo',type:'Demo',date:'Upcoming',desc:'End-to-end demonstration of booking, fairness allocation, QR issuance/return, analytics, and notifications.',status:'upcoming'},
+ {title:'Final Presentation',type:'Final',date:'Upcoming',desc:'Complete SCMS system, testing results, deployment, learnings, and future improvements.',status:'upcoming'}
+];
+const CHANGELOG=[
+ {date:'2026-09-13',title:'Local Runtime Integration Validation',type:'added',items:['Backend migrated and seeded successfully','React dashboard running locally','Resolved localhost:5174 CORS preflight issue','Preparing full E2E workflow validation']},
+ {date:'2026-09-12',title:'Production Readiness Audit Completed',type:'milestone',items:['Alembic migration generated','Production secret handling improved','Docker deployment artifacts added','README and deployment documentation completed','Automated verification suites passing']},
+ {date:'2026-09-11',title:'Web Dashboard Completed',type:'added',items:['Admin dashboard and analytics','Inventory and slots management','Bookings, transactions and defaulters','Staff management and fairness configuration']},
+ {date:'2026-09-10',title:'Mobile Applications Completed',type:'added',items:['Student Flutter experience','Staff Flutter experience','QR validation and issue/return workflows','Role guards and session restoration']},
+ {date:'2026-09-09',title:'Backend Implementation Completed',type:'added',items:['FastAPI backend','PostgreSQL schema','Fairness allocation','Notifications','Schedulers','Admin and staff APIs']}
+];
+const GH={owner:'sanveer-singh-suneja',repo:'scms'};
+let curPage='home',curMember=null;
+function go(p,m=null){curPage=p;curMember=m;location.hash=m?'#member/'+m:'#'+p;closeNav();render();navActive();window.scrollTo({top:0,behavior:'smooth'});}
+function toggleNav(){document.getElementById('nl').classList.toggle('open')}function closeNav(){document.getElementById('nl').classList.remove('open')}
+function parseHash(){const h=location.hash.replace('#','');if(!h||h==='home')return{page:'home'};if(h.startsWith('member/'))return{page:'member',member:h.split('/')[1]};return{page:h}}
+function loadFromHash(){const h=parseHash();curPage=h.page;curMember=h.member||null;render();navActive()}
+function navActive(){document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));const map={home:0,project:1,arch:2,progress:3,team:4,github:5,ppts:6,docs:7,changelog:8,deploy:9};const i=map[curPage];if(i!=null)document.querySelectorAll('.nav-links a')[i]?.classList.add('active')}
+function render(){const app=document.getElementById('app'),ft=document.getElementById('ft');const pages={home:rHome,project:rProject,arch:rArch,progress:rProgress,team:rTeam,member:rMember,github:rGithub,ppts:rPpts,docs:rDocs,changelog:rChangelog,deploy:rDeploy};app.innerHTML=(pages[curPage]||r404)();ft.style.display=curPage==='member'?'block':'block';if(curPage==='progress')bindWeekButtons();if(curPage==='github')loadGithub();}
+function teamCards(){return TEAM.map(m=>`<div class="team-card ${m.leader?'leader':''}"><div class="t-avatar" style="background:${m.color}">${m.init}</div>${m.leader?'<div class="t-leader">TEAM LEADER</div>':''}<div class="t-name">${m.full}</div><div class="t-role">${m.role}</div><div class="t-roll">Roll No. ${m.roll}</div><div class="soc"><a href="${m.github}" target="_blank" rel="noreferrer" title="GitHub">GH</a><a href="${m.linkedin}" target="_blank" rel="noreferrer" title="LinkedIn">in</a></div><a class="back-link" style="margin:0;font-size:11px" href="#" onclick="go('member','${m.id}');return false">View contribution →</a></div>`).join('')}
+function rHome(){return `<div class="page"><div class="hero"><div class="hero-bg"></div><svg class="hero-svg" viewBox="0 0 1400 800" preserveAspectRatio="none"><path d="M0 650 C180 540 240 720 430 610 S760 530 960 640 S1200 690 1400 560 L1400 800 L0 800Z" fill="rgba(125,184,125,.10)"/><circle cx="1160" cy="150" r="180" fill="rgba(168,213,168,.16)"/><circle cx="260" cy="220" r="120" fill="rgba(221,235,214,.32)"/></svg><div class="hero-content"><div class="hero-pill"><span class="dot"></span><span>SOFTWARE ENGINEERING · TIET · SCMS</span></div><div class="hero-big">Sports Complex <em>Management System</em> (SCMS)</div><div class="hero-tagline">A fair, QR-enabled platform for reserving, issuing, returning, and managing sports equipment.</div><div class="hero-sub">FastAPI · PostgreSQL · Flutter · React · Fairness Allocation · QR Workflows</div><div class="hero-ctas"><a class="btn btn-p" href="#" onclick="go('project');return false">Explore Project →</a><a class="btn btn-s" href="#" onclick="go('arch');return false">View Architecture</a></div><div class="hero-stats"><div class="hero-stat"><div class="hero-stat-val">10</div><div class="hero-stat-lbl">Core entities</div></div><div class="hero-stat"><div class="hero-stat-val">40+</div><div class="hero-stat-lbl">API workflows</div></div><div class="hero-stat"><div class="hero-stat-val">3</div><div class="hero-stat-lbl">Interfaces</div></div><div class="hero-stat"><div class="hero-stat-val">100%</div><div class="hero-stat-lbl">Role-based access</div></div></div></div></div><div class="section section-green"><div class="wrap"><div class="sec-hdr"><div class="lbl">Project snapshot</div><h2>One system, three connected surfaces.</h2><p>SCMS brings students, sports staff, and administrators into one consistent workflow with fairness, accountability, and real-time operational state.</p></div><div class="feat-strip"><div class="feat-item"><div class="feat-icon">📱</div><div class="feat-title">Student Mobile App</div><div class="feat-desc">Browse equipment and slots, request bookings, track waitlists, scan QR, view history and notifications.</div></div><div class="feat-item"><div class="feat-icon">🛠️</div><div class="feat-title">Staff Mobile App</div><div class="feat-desc">Validate student/equipment QR codes, manage issue and return transactions, queues, and inventory.</div></div><div class="feat-item"><div class="feat-icon">📊</div><div class="feat-title">Admin Web Dashboard</div><div class="feat-desc">Operate equipment, slots, bookings, fairness settings, staff, defaulters, transactions, and analytics.</div></div><div class="feat-item"><div class="feat-icon">⚖️</div><div class="feat-title">Fair Allocation</div><div class="feat-desc">A configurable priority score balances recent usage and booking recency while respecting daily caps.</div></div></div></div></div><div class="section"><div class="wrap"><div class="sec-hdr"><div class="lbl">Current state</div><h2>Built. Integrated. Being validated.</h2><p>The backend and web dashboard are working locally. Flutter mobile development and end-to-end integration are the next milestones.</p></div><div class="g4"><div class="stat-box"><div class="stat-val">✓</div><div class="stat-lbl">Backend foundation</div></div><div class="stat-box"><div class="stat-val">→</div><div class="stat-lbl">Flutter apps next</div></div><div class="stat-box"><div class="stat-val">✓</div><div class="stat-lbl">React admin dashboard</div></div><div class="stat-box"><div class="stat-val">52%</div><div class="stat-lbl">Project completion</div></div></div></div></div></div>`}
+function rProject(){return `<div class="page"><div class="section"><div class="wrap"><div class="sec-hdr"><div class="lbl">Project</div><h2>Sports Complex Management System (SCMS)</h2><p>SCMS digitizes the complete lifecycle of sports-equipment access at TIET: reservation, fair allocation, issuance, return, exceptions, and administrative oversight.</p></div><div class="g2"><div class="card"><div class="lbl mb8">Problem</div><h3 class="mb8">Manual equipment operations create avoidable friction.</h3><p class="tm">Students need predictable slot access, staff need fast verification and transaction handling, and administrators need a single source of truth for inventory, bookings, usage, and defaulters.</p></div><div class="card"><div class="lbl lbl-earth mb8">Solution</div><h3 class="mb8">A role-aware, QR-enabled management platform.</h3><p class="tm">Students book through mobile, staff operate through scan-driven workflows, and administrators control resources from a web dashboard backed by FastAPI and PostgreSQL.</p></div></div><div class="mt32 g3"><div class="card card-green"><div class="lbl mb8">Students</div><h3>Reserve & track</h3><p class="tm mt8">Equipment catalogue, slots, bookings, waitlists, QR identity, notifications, and history.</p></div><div class="card card-green"><div class="lbl mb8">Staff</div><h3>Issue & return</h3><p class="tm mt8">Scan student/equipment QR codes, validate state, issue items, process returns, and handle damage.</p></div><div class="card card-green"><div class="lbl mb8">Admin</div><h3>Operate & analyze</h3><p class="tm mt8">Inventory, slots, fairness configuration, bookings, transactions, defaulters, staff, and analytics.</p></div></div><div class="mt48"><div class="lbl mb8">Core business rules</div><div class="g2"><div class="card"><h3>Fairness allocation</h3><p class="tm mt8">Priority score combines normalized sessions in the last 7 days with a recency bonus. Lower score means higher allocation priority. A configurable daily cap protects equitable access.</p></div><div class="card"><h3>Lifecycle integrity</h3><p class="tm mt8">Equipment and booking states move through explicit state machines so issue, return, cancellation, no-show, waitlist promotion, and maintenance outcomes remain auditable.</p></div></div></div></div></div></div>`}
+function rArch(){return `<div class="page"><div class="section"><div class="wrap"><div class="sec-hdr"><div class="lbl">Architecture</div><h2>Three clients. One backend. One source of truth.</h2><p>The architecture is intentionally modular so mobile, web, and operational workflows share the same authentication, business rules, and data model.</p></div><div class="arch-wrap"><div class="pipe"><div class="pipe-step">Flutter Student App</div><div class="pipe-arr"></div><div class="pipe-step">Flutter Staff App</div><div class="pipe-arr"></div><div class="pipe-step">React + TypeScript Admin Dashboard</div><div class="pipe-arr"></div><div class="pipe-step hl">FastAPI REST API · JWT · Role Guards</div><div class="pipe-arr"></div><div class="pipe-step">Services · Fairness · Notifications · Scheduler</div><div class="pipe-arr"></div><div class="pipe-step hl">PostgreSQL · SQLModel · Alembic</div></div></div><div class="mt32 g3"><div class="card"><div class="lbl mb8">Mobile</div><h3>Flutter</h3><p class="tm mt8">Riverpod state management, GoRouter navigation, Dio networking, secure storage, QR scanning/generation.</p></div><div class="card"><div class="lbl mb8">Web</div><h3>React + Vite</h3><p class="tm mt8">TanStack Query, Axios, TypeScript, Tailwind, Radix primitives, Recharts, protected role-aware dashboard.</p></div><div class="card"><div class="lbl mb8">Backend</div><h3>FastAPI + PostgreSQL</h3><p class="tm mt8">SQLModel entities, Alembic migrations, JWT authentication, business services, scheduled jobs, admin/staff APIs.</p></div></div><div class="mt32 card"><div class="lbl mb8">Data model</div><p class="tm">Students · Users · Equipment · Slots · Bookings · Transactions · UsageStatistics · Defaulters · Notifications · FairnessConfig</p></div></div></div></div>`}
+function rProgress(){return `<div class="page"><div class="section"><div class="wrap"><div class="sec-hdr"><div class="lbl">Progress</div><h2>Implementation roadmap</h2><p>${PS.phase} · ${PS.progress}% complete · ${PS.status}</p></div>${ROADMAP.map(r=>`<div class="rm-phase"><div class="rm-hdr"><div><div class="rm-title">${r.phase}</div><div class="rm-weeks">Weeks ${r.weeks}</div></div><span class="badge ${r.active?'b-earth':'b-forest'}">${r.pct}%</span></div><div style="padding:0 20px 14px;background:var(--bg-card)">${r.tasks.map(x=>`<span class="badge b-sage" style="margin:4px 5px 0 0">${x}</span>`).join('')}</div><div class="rm-bar"><div class="rm-fill" style="width:${r.pct}%;background:${r.color}"></div></div></div>`).join('')}<div class="mt48"><div class="sec-hdr"><div class="lbl">Weekly execution</div><h2>Milestones and contributions</h2></div><div class="timeline">${WEEKLY.map(w=>`<div class="tl-item" id="wk${w.week}"><div class="tl-dot ${w.status==='done'?'done':w.status==='current'?'active':''}"></div><div class="card"><div class="flex fw aic" style="justify-content:space-between;gap:12px"><div><div class="lbl">Week ${w.week}</div><h3 style="margin-top:5px">${w.title}</h3></div><span class="badge ${w.status==='done'?'b-green':w.status==='current'?'b-earth':'b-sage'}">${w.status}</span></div><p class="tm mt16">${w.summary}</p>${w.done.length?`<div class="mt16"><div class="lbl">Completed</div>${w.done.map(d=>`<div class="contrib-line">${d}</div>`).join('')}</div>`:''}<div class="mt16"><div class="lbl">Contributions</div>${Object.entries(w.contribs||{}).map(([id,arr])=>arr.map(c=>`<div class="contrib-line"><strong>${TEAM.find(t=>t.id===id)?.name||id}:</strong> ${c}</div>`).join('')).join('')}</div><div class="mt16"><div class="lbl">Next</div>${(w.next||[]).map(n=>`<div class="contrib-line">${n}</div>`).join('')}</div></div></div>`).join('')}</div></div></div></div>`}
+function rTeam(){return `<div class="page"><div class="section"><div class="wrap"><div class="sec-hdr"><div class="lbl">Team</div><h2>SCMS project team</h2><p>Three-person team building and validating the complete Smart Sports Equipment Management System.</p></div><div class="g3">${teamCards()}</div></div></div></div>`}
+function rMember(){const m=TEAM.find(x=>x.id===curMember);if(!m)return r404();return `<div class="page"><div class="prof-hero"><div class="prof-in"><div class="prof-av" style="background:${m.color}">${m.init}</div><div><div class="lbl">Team profile</div><div class="prof-name">${m.full}</div><div class="prof-role">${m.role}</div><div class="t-roll">Roll No. ${m.roll}</div><div class="soc mt16"><a href="${m.github}" target="_blank" rel="noreferrer">GitHub</a><a href="${m.linkedin}" target="_blank" rel="noreferrer">LinkedIn</a></div></div></div></div><div class="section"><div class="wrap" style="max-width:920px"><a class="back-link" href="#" onclick="go('team');return false">← Back to team</a><div class="sec-hdr"><div class="lbl">Contribution</div><h2>What ${m.name} owns in SCMS</h2><p>${m.bio}</p></div>${m.resp.map(x=>`<div class="contrib-block"><div class="contrib-body"><div class="contrib-line">${x}</div></div></div>`).join('')}<div class="mt32 card"><div class="lbl">Contact</div><p class="tm mt8">GitHub: <a href="${m.github}" target="_blank" rel="noreferrer">${m.github}</a><br>LinkedIn: <a href="${m.linkedin}" target="_blank" rel="noreferrer">${m.linkedin}</a></p></div></div></div></div>`}
+function rGithub(){return `<div class="page"><div class="section"><div class="wrap"><div class="sec-hdr"><div class="lbl">Repository</div><h2>Source and implementation</h2><p>The complete SCMS source code, implementation history, contributors, commits, and project files are maintained in the team's GitHub repository.</p></div><div class="g2"><div class="card card-green"><div class="lbl mb8">Repository</div><h3>SCMS on GitHub</h3><p class="tm mt8">Backend, Flutter apps, React dashboard, migrations, services, tests, and deployment artifacts.</p><div class="mt16"><a class="btn btn-p" href="https://github.com/sanveer-singh-suneja/scms" target="_blank" rel="noreferrer">Open Repository ↗</a></div></div><div class="card"><div class="lbl mb8">Live repository stats</div><div class="g3"><div class="stat-box"><div class="stat-val" id="ghStars">—</div><div class="stat-lbl">Stars</div></div><div class="stat-box"><div class="stat-val" id="ghForks">—</div><div class="stat-lbl">Forks</div></div><div class="stat-box"><div class="stat-val" id="ghIssues">—</div><div class="stat-lbl">Open issues</div></div></div></div></div><div class="mt32 g2"><div class="card"><div class="lbl">Contributors</div><div id="ghContrib" class="mt16"><div class="td">Loading GitHub contributors…</div></div></div><div class="card"><div class="lbl">Recent commits</div><div id="ghCommits" class="mt16"><div class="td">Loading recent commits…</div></div></div></div><div class="mt32 card"><div class="lbl">Repository links</div><div class="mt16"><a class="btn btn-s" href="https://github.com/sanveer-singh-suneja/scms/commits" target="_blank" rel="noreferrer">All Commits ↗</a><a class="btn btn-s" style="margin-left:8px" href="https://github.com/sanveer-singh-suneja/scms/graphs/contributors" target="_blank" rel="noreferrer">Contributor Graph ↗</a><a class="btn btn-s" style="margin-left:8px" href="https://github.com/sanveer-singh-suneja/scms/pulls" target="_blank" rel="noreferrer">Pull Requests ↗</a><a class="btn btn-s" style="margin-left:8px" href="https://github.com/sanveer-singh-suneja/scms/issues" target="_blank" rel="noreferrer">Issues ↗</a></div></div><div class="mt32 card"><div class="lbl">Team GitHub profiles</div>${TEAM.map(m=>`<div class="commit-item"><div style="flex:1"><div class="c-msg">${m.full}</div><div class="c-meta"><a href="${m.github}" target="_blank" rel="noreferrer">${m.github}</a></div></div><span class="badge ${m.leader?'b-forest':'b-sage'}">${m.leader?'LEAD':'MEMBER'}</span></div>`).join('')}</div></div></div></div>`} 
+async function loadGithub(){
+  const repo='https://api.github.com/repos/sanveer-singh-suneja/scms';
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val};
+  const esc=(v)=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;',"\"":'&quot;'}[c]));
+  try{
+    const [rRepo,rContrib,rCommits]=await Promise.all([
+      fetch(repo,{headers:{Accept:'application/vnd.github+json'}}),
+      fetch(repo+'/contributors?per_page=10',{headers:{Accept:'application/vnd.github+json'}}),
+      fetch(repo+'/commits?per_page=8',{headers:{Accept:'application/vnd.github+json'}})
+    ]);
+    if(!rRepo.ok||!rContrib.ok||!rCommits.ok)throw new Error('GitHub API request failed');
+    const data=await rRepo.json(), contributors=await rContrib.json(), commits=await rCommits.json();
+    set('ghStars',data.stargazers_count);set('ghForks',data.forks_count);set('ghIssues',data.open_issues_count);
+    const c=document.getElementById('ghContrib');
+    if(c)c.innerHTML=Array.isArray(contributors)&&contributors.length?contributors.map(x=>`<div class="commit-item"><img src="${esc(x.avatar_url)}" alt="" style="width:30px;height:30px;border-radius:50%"><div style="flex:1"><div class="c-msg">${esc(x.login)}</div><div class="c-meta">${x.contributions} contribution${x.contributions===1?'':'s'}</div></div><a class="c-sha" href="${esc(x.html_url)}" target="_blank" rel="noreferrer">↗</a></div>`).join(''):'<div class="td">No contributor data available.</div>';
+    const cm=document.getElementById('ghCommits');
+    if(cm)cm.innerHTML=Array.isArray(commits)&&commits.length?commits.map(x=>{const msg=(x.commit?.message||'').split('\n')[0];const name=x.author?.login||x.commit?.author?.name||'Unknown';const date=x.commit?.author?.date?new Date(x.commit.author.date).toLocaleDateString():'';return `<div class="commit-item"><div style="flex:1"><div class="c-msg">${esc(msg)}</div><div class="c-meta">${esc(name)} · ${esc(date)}</div></div><a class="c-sha" href="${esc(x.html_url)}" target="_blank" rel="noreferrer">${esc((x.sha||'').slice(0,7))}</a></div>`}).join(''):'<div class="td">No commit data available.</div>';
+  }catch(e){
+    const c=document.getElementById('ghContrib'),cm=document.getElementById('ghCommits');
+    set('ghStars','—');set('ghForks','—');set('ghIssues','—');
+    if(c)c.innerHTML='<div class="td">GitHub activity could not be loaded right now. Use the repository links below.</div>';
+    if(cm)cm.innerHTML='<div class="td">GitHub activity could not be loaded right now. Use the repository links below.</div>';
+  }
+}
+function rPpts(){return `<div class="page"><div class="section"><div class="wrap"><div class="sec-hdr"><div class="lbl">Presentations</div><h2>Project presentation archive</h2><p>Keep planning, progress, demo, and final presentation links here as the semester progresses.</p></div>${PPTS.map(p=>`<div class="card mb20"><div class="flex fw aic" style="justify-content:space-between;gap:10px"><div><span class="badge ${p.status==='done'?'b-green':'b-earth'}">${p.type}</span><h3 style="margin-top:8px">${p.title}</h3></div><span class="mono td" style="font-size:11px">${p.date}</span></div><p class="tm mt16">${p.desc}</p><div class="mt16"><span class="coming">${p.status==='done'?'DOCUMENTED':'UPCOMING'}</span></div></div>`).join('')}</div></div></div>`}
+function rDocs(){const secs=[['Project overview','SCMS is a Smart Sports Equipment Management System for managing reservations, fairness-based slot allocation, QR-driven issue/return workflows, inventory, transactions, notifications, and administration.'],['Roles','Students use the mobile booking experience. Staff handle QR validation, issue, return, queue, and inventory operations. Admins manage configuration, slots, equipment, staff, defaulters, bookings, transactions, and analytics.'],['Fairness model','Priority = normalized sessions over the last 7 days + recency bonus. Lower score receives higher priority. Daily caps and timestamp tie-breaking are applied during batch allocation.'],['Operational states','Bookings: REQUESTED, CONFIRMED, WAITLISTED, CANCELLED, NO_SHOW, COMPLETED. Equipment: AVAILABLE, BOOKED, ISSUED, MAINTENANCE, RETIRED. Transactions: ISSUED, RETURNED, RETURNED_DAMAGED, OVERDUE.'],['Testing','The implementation has backend, web, and Flutter automated tests plus runtime integration validation. The current phase is end-to-end validation of the running system.']];return `<div class="page"><div class="section"><div class="wrap"><div class="sec-hdr"><div class="lbl">Documentation</div><h2>SCMS technical notes</h2><p>Concise project documentation for demonstrations, maintenance, and deployment.</p></div>${secs.map(s=>`<div class="card mb20"><div class="lbl mb8">${s[0]}</div><p class="tm">${s[1]}</p></div>`).join('')}</div></div></div>`}
+function rChangelog(){const badge={added:'b-green',milestone:'b-forest',updated:'b-sage',fixed:'b-earth'};return `<div class="page"><div class="section"><div class="wrap"><div class="sec-hdr"><div class="lbl">Changelog</div><h2>Implementation history</h2><p>Key milestones from requirements through runtime validation.</p></div>${CHANGELOG.map(c=>`<div class="card mb20"><div class="flex fw aic" style="justify-content:space-between;gap:10px"><div><span class="badge ${badge[c.type]||'b-sage'}">${c.type}</span><h3 style="margin-top:8px">${c.title}</h3></div><span class="mono td" style="font-size:11px">${c.date}</span></div><div class="mt16">${c.items.map(i=>`<div class="contrib-line">${i}</div>`).join('')}</div></div>`).join('')}</div></div></div>`}
+function rDeploy(){return `<div class="page"><div class="section"><div class="wrap" style="max-width:900px"><div class="sec-hdr"><div class="lbl">Deployment</div><h2>From local validation to TIET deployment</h2><p>The application is designed to move from local Docker/runtime testing to a production server with PostgreSQL, HTTPS, and production mobile API configuration.</p></div><div class="timeline"><div class="tl-item"><div class="tl-dot active"></div><div class="card"><div class="lbl">Now</div><h3>Local E2E validation</h3><p class="tm mt8">Verify web, student, and staff workflows against the local backend; validate fairness, issue/return, waitlists, notifications, and role guards.</p></div></div><div class="tl-item"><div class="tl-dot"></div><div class="card"><div class="lbl">Next</div><h3>Docker runtime test</h3><p class="tm mt8">Run PostgreSQL, FastAPI, and React/Nginx together, apply migrations, and verify environment-variable configuration.</p></div></div><div class="tl-item"><div class="tl-dot"></div><div class="card"><div class="lbl">Production</div><h3>Secure deployment</h3><p class="tm mt8">Set a strong SECRET_KEY, APP_ENV=production, production CORS, production database, HTTPS, backups, and real administrative credentials.</p></div></div><div class="tl-item"><div class="tl-dot"></div><div class="card"><div class="lbl">Mobile</div><h3>Production API configuration</h3><p class="tm mt8">Configure the Flutter Android/iOS applications to use the production HTTPS API endpoint before release builds.</p></div></div></div></div></div></div>`}
+function r404(){return `<div class="page"><div class="notfound"><div style="font-size:7rem;font-weight:800;color:var(--forest);line-height:1">404</div><h2>Section not found</h2><a class="btn btn-p" href="#" onclick="go('home');return false">Back home</a></div></div>`}
+function bindWeekButtons(){}
+window.addEventListener('hashchange',loadFromHash);document.addEventListener('click',e=>{const a=e.target.closest('a[href="#"]');if(a)e.preventDefault();});history.replaceState({page:curPage},'',location.hash||'#home');loadFromHash();
+</script>
+</body>
+</html>
