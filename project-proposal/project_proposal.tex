@@ -1,5 +1,7 @@
 \documentclass{article}
 \usepackage{graphicx} % Required for inserting images
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta}
 
 \title{Smart Sports Equipment Management System}
 \author{Jaspreet Singh Sanveer Singh Harshjot Singh}
@@ -52,7 +54,35 @@ SSEMS is composed of the following core modules:
 \end{itemize}
 
 \section{Database Schema}
-The relational schema consists of six primary entities.
+The relational schema consists of six primary entities. Figure~\ref{fig:er-diagram} shows a simplified entity-relationship overview.
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+        entity/.style={draw, rectangle, minimum width=2.6cm, minimum height=0.9cm, align=center, font=\small},
+        rel/.style={font=\scriptsize, align=center},
+        >=Stealth
+    ]
+        % Nodes
+        \node[entity] (students) {STUDENTS};
+        \node[entity, above right=1.6cm and 3.2cm of students] (equipment) {EQUIPMENT\_ITEMS};
+        \node[entity, right=4cm of students] (transactions) {TRANSACTIONS};
+        \node[entity, below right=1.6cm and 3.2cm of students] (bookings) {BOOKINGS};
+        \node[entity, above=1.2cm of students] (usage) {USAGE\_STATS};
+        \node[entity, below=1.2cm of students] (defaulters) {DEFAULTERS};
+
+        % Relationships
+        \draw[->] (students.east) -- (transactions.west) node[midway, rel, above] {makes};
+        \draw[->] (equipment.south) -- (transactions.north) node[midway, rel, above left] {is issued in};
+        \draw[->] (students.east) -- (bookings.west) node[midway, rel, below] {creates};
+        \draw[->] (equipment.east) -- ++(1.4cm,0) |- (bookings.east)
+            node[midway, rel, above, pos=0.75] {is reserved in};
+        \draw[->] (students.north) -- (usage.south) node[midway, rel, left] {has};
+        \draw[->] (students.south) -- (defaulters.north) node[midway, rel, left] {may become};
+    \end{tikzpicture}
+    \caption{Simplified Entity-Relationship diagram of SSEMS}
+    \label{fig:er-diagram}
+\end{figure}
 
 \subsection{Students}
 \begin{itemize}
